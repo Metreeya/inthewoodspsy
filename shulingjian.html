@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>树林间 · 心理咨询</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green:        #92a870;
+  --green-dark:   #6a7e48;
+  --green-deep:   #3e4e28;
+  --green-light:  #dce8cc;
+  --green-pale:   #eef4e4;
+  --green-mid:    #c4d8a8;
+  --brown:        #9e7a50;
+  --cream:        #f8f6ee;
+  --cream-dark:   #f0ece0;
+  --ink:          #3e4e28;
+  --ink-soft:     #7a8660;
+  --ink-muted:    #a0a882;
+  --border:       #ccd8b4;
+}
+
+html, body {
+  background: var(--cream);
+  font-family: 'Noto Sans SC', 'PingFang SC', sans-serif;
+  min-height: 100vh;
+}
+
+.shell {
+  max-width: 420px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+}
+
+.progress-bar {
+  height: 2px;
+  background: var(--green-light);
+  flex-shrink: 0;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--green);
+  transition: width 0.5s ease;
+}
+
+.slides-area {
+  flex: 1;
+  padding-bottom: 68px;
+}
+
+.slide {
+  display: none;
+  animation: fadeUp 0.3s ease;
+}
+.slide.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 导航 */
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.6rem 1.8rem;
+}
+.btn-back {
+  background: none; border: none;
+  color: var(--ink-muted); font-size: 13px;
+  cursor: pointer; font-family: inherit;
+}
+.btn-next {
+  background: var(--green-dark);
+  color: #fff; border: none;
+  border-radius: 2px;
+  padding: 10px 26px;
+  font-size: 13.5px; font-family: inherit;
+  letter-spacing: 0.06em; cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-next:hover { background: var(--green-deep); }
+.step-count {
+  font-size: 11px; color: var(--ink-muted);
+  letter-spacing: 0.1em;
+}
+
+/* 固定底部 */
+.fixed-cta {
+  position: fixed; bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100%; max-width: 420px;
+  background: rgba(248,246,238,0.95);
+  border-top: 0.5px solid var(--border);
+  padding: 0.75rem 1.6rem;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+}
+.btn-book {
+  display: block; width: 100%;
+  background: none;
+  border: 1px solid var(--green);
+  border-radius: 2px;
+  color: var(--green-dark);
+  font-size: 13.5px; font-family: inherit;
+  letter-spacing: 0.08em;
+  padding: 9px 0; cursor: pointer;
+  text-align: center; text-decoration: none;
+  transition: background 0.2s;
+}
+.btn-book:hover { background: var(--green-pale); }
+
+/* ── S0 欢迎 ── */
+.s0-header {
+  background: var(--green-light);
+  padding: 2.8rem 1.6rem 2rem;
+  border-bottom: 1px solid var(--green-mid);
+}
+.s0-tag {
+  display: inline-block;
+  background: rgba(106,126,72,0.12);
+  color: var(--green-dark);
+  font-size: 10px; letter-spacing: 0.18em;
+  padding: 4px 12px; margin-bottom: 1.4rem;
+}
+.s0-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 24px; font-weight: 300;
+  color: var(--green-deep);
+  line-height: 1.7;
+}
+.s0-body {
+  padding: 1.6rem 1.6rem 0;
+}
+.s0-body p {
+  font-size: 14px; color: var(--ink-soft);
+  line-height: 2; margin-bottom: 0.7rem;
+}
+.s0-quote {
+  margin: 1.2rem 0 0;
+  background: var(--green-pale);
+  border-left: 3px solid var(--green-mid);
+  padding: 1rem 1.2rem;
+}
+.s0-quote .zh {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 13px; color: var(--green-dark);
+  line-height: 2; font-style: italic;
+}
+.s0-quote .note {
+  font-size: 11px; color: var(--ink-muted);
+  margin-top: 4px; letter-spacing: 0.06em;
+}
+
+/* ── S1 咨询是什么 ── */
+.s-label {
+  display: flex; align-items: center; gap: 10px;
+  padding: 2rem 1.6rem 0;
+}
+.s-num {
+  width: 26px; height: 26px;
+  background: var(--green);
+  color: #fff; border-radius: 50%;
+  font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.s-section {
+  font-size: 11px; letter-spacing: 0.14em;
+  color: var(--ink-muted);
+}
+.s-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 21px; font-weight: 300;
+  color: var(--green-deep);
+  line-height: 1.65; padding: 0.9rem 1.6rem 0;
+}
+.s-body {
+  padding: 1rem 1.6rem 0;
+  font-size: 14px; color: var(--ink-soft);
+  line-height: 2;
+}
+.s-body p { margin-bottom: 0.7rem; }
+
+.item-cards {
+  padding: 1rem 1.6rem 0;
+  display: grid; gap: 0.6rem;
+}
+.item-card {
+  background: var(--green-pale);
+  border: 0.5px solid var(--green-mid);
+  padding: 0.8rem 1rem;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.item-card .dot {
+  width: 5px; height: 5px;
+  background: var(--green);
+  border-radius: 50%; flex-shrink: 0;
+  margin-top: 7px;
+}
+.item-card span {
+  font-size: 13.5px; color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+/* ── S2 适合你吗 ── */
+.s2-top {
+  background: var(--green-light);
+  padding: 2rem 1.6rem 1.4rem;
+  border-bottom: 1px solid var(--green-mid);
+}
+.s2-top .label {
+  font-size: 11px; letter-spacing: 0.14em;
+  color: var(--green-dark); margin-bottom: 0.7rem;
+}
+.s2-top h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 21px; font-weight: 300;
+  color: var(--green-deep); line-height: 1.65;
+}
+.s2-list { padding: 0.4rem 1.6rem 0; }
+.s2-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 0.85rem 0;
+  border-bottom: 0.5px solid var(--border);
+}
+.s2-item:last-child { border-bottom: none; }
+.s2-index {
+  font-size: 11px; color: var(--green);
+  letter-spacing: 0.06em; flex-shrink: 0;
+  margin-top: 2px;
+  font-family: 'Noto Serif SC', serif;
+}
+.s2-item p {
+  font-size: 13.5px; color: var(--ink-soft);
+  line-height: 1.75;
+}
+.s2-note {
+  margin: 0.8rem 1.6rem 0;
+  background: var(--green-pale);
+  border-left: 3px solid var(--green-mid);
+  padding: 0.85rem 1rem;
+  font-size: 13px; color: var(--green-dark);
+  line-height: 1.85;
+}
+
+/* ── S3 关于我 ── */
+.s3-name-row {
+  margin: 2rem 1.6rem 0;
+  padding-bottom: 1.2rem;
+  border-bottom: 0.5px solid var(--border);
+  display: flex; align-items: flex-end; gap: 12px;
+}
+.s3-name {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 28px; font-weight: 300;
+  color: var(--green-deep);
+}
+.s3-badge {
+  background: var(--green);
+  color: #fff; font-size: 11px;
+  padding: 3px 10px; margin-bottom: 5px;
+  letter-spacing: 0.06em;
+}
+.s3-body {
+  padding: 1.2rem 1.6rem 0;
+  font-size: 14px; color: var(--ink-soft);
+  line-height: 2;
+}
+.s3-body p { margin-bottom: 0.7rem; }
+.s3-tags {
+  padding: 0.8rem 1.6rem 0;
+  display: flex; flex-wrap: wrap; gap: 7px;
+}
+.s3-tag {
+  background: var(--green-pale);
+  border: 0.5px solid var(--green-mid);
+  color: var(--green-dark);
+  font-size: 12.5px; padding: 4px 13px;
+}
+.s3-note {
+  margin: 1rem 1.6rem 0;
+  border-left: 2px solid var(--border);
+  padding-left: 1rem;
+  font-size: 12.5px; color: var(--ink-muted);
+  line-height: 1.85;
+}
+
+/* ── S4 咨询设置 ── */
+.s4-header {
+  background: var(--green-light);
+  padding: 1.8rem 1.6rem 1.4rem;
+  border-bottom: 1px solid var(--green-mid);
+}
+.s4-header .label {
+  font-size: 11px; letter-spacing: 0.14em;
+  color: var(--green-dark); margin-bottom: 0.6rem;
+}
+.s4-header h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 21px; font-weight: 300;
+  color: var(--green-deep);
+}
+.s4-rows { padding: 0 1.6rem; }
+.s4-row {
+  display: flex; justify-content: space-between;
+  align-items: baseline; gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 0.5px solid var(--border);
+}
+.s4-row:last-child { border-bottom: none; }
+.s4-key {
+  font-size: 12px; color: var(--ink-muted);
+  letter-spacing: 0.06em; flex-shrink: 0;
+}
+.s4-val {
+  font-size: 13.5px; color: var(--ink-soft);
+  text-align: right; line-height: 1.65;
+}
+.s4-val small {
+  display: block; font-size: 12px;
+  color: var(--ink-muted); margin-top: 2px;
+}
+.s4-note {
+  margin: 0.4rem 1.6rem 0;
+  background: var(--green-pale);
+  border-left: 3px solid var(--green-mid);
+  padding: 0.85rem 1rem;
+  font-size: 13px; color: var(--green-dark);
+  line-height: 1.85;
+}
+
+/* ── S5 来访流程 ── */
+.s5-header {
+  padding: 2rem 1.6rem 1rem;
+}
+.s5-header .label {
+  font-size: 11px; letter-spacing: 0.14em;
+  color: var(--ink-muted); margin-bottom: 0.6rem;
+}
+.s5-header h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 21px; font-weight: 300;
+  color: var(--green-deep);
+}
+.s5-steps { padding: 0 1.6rem; }
+.s5-step {
+  display: flex; gap: 14px;
+  padding: 1rem 0;
+  position: relative;
+}
+.s5-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 13px; top: 40px;
+  width: 1px; height: calc(100% - 16px);
+  background: var(--green-mid);
+}
+.s5-circle {
+  width: 26px; height: 26px;
+  background: var(--green);
+  color: #fff; border-radius: 50%;
+  font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; position: relative; z-index: 1;
+}
+.s5-content { flex: 1; padding-top: 2px; }
+.s5-content strong {
+  display: block; font-size: 14px;
+  color: var(--green-deep); font-weight: 500;
+  margin-bottom: 3px;
+}
+.s5-content p {
+  font-size: 13px; color: var(--ink-muted);
+  line-height: 1.75;
+}
+.s5-note {
+  margin: 0.2rem 1.6rem 0;
+  padding-top: 0.8rem;
+  border-top: 0.5px solid var(--border);
+  font-size: 12.5px; color: var(--ink-muted);
+  line-height: 1.85;
+}
+
+/* ── S6 结尾 ── */
+.s6-wrap { padding: 2rem 1.6rem 0; }
+.s6-big {
+  background: var(--green-light);
+  border: 1px solid var(--green-mid);
+  padding: 2.2rem 1.6rem;
+}
+.s6-big h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 22px; font-weight: 300;
+  color: var(--green-deep);
+  line-height: 1.75; margin-bottom: 1rem;
+}
+.s6-big p {
+  font-size: 13.5px; color: var(--ink-soft);
+  line-height: 1.95;
+}
+.s6-btn-wrap { padding: 1.2rem 0 0; }
+.btn-book-final {
+  display: block; width: 100%;
+  background: var(--green-dark);
+  color: #fff; border: none;
+  border-radius: 2px;
+  padding: 14px 0;
+  font-size: 15px; font-family: inherit;
+  letter-spacing: 0.08em; cursor: pointer;
+  text-align: center; text-decoration: none;
+  transition: background 0.2s;
+}
+.btn-book-final:hover { background: var(--green-deep); }
+.s6-sub {
+  margin-top: 0.9rem;
+  font-size: 12px; color: var(--ink-muted);
+  text-align: center; line-height: 1.8;
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress" style="width:14.3%"></div>
+  </div>
+
+  <div class="slides-area">
+
+    <!-- S0 欢迎 -->
+    <div class="slide active" id="s0">
+      <div class="s0-header">
+        <div class="s0-tag">树 林 间 · 心理咨询</div>
+        <h1 class="s0-title">欢迎来到树林间。</h1>
+      </div>
+      <div class="s0-body">
+        <p>在这里，我想和你聊聊咨询是什么、我是谁，以及如果你想，可以怎么开始咨询。</p>
+        <div class="s0-quote">
+          <div class="zh">走一步，再走一步。— 莫顿·亨特</div>
+        </div>
+      </div>
+      <div class="nav-row">
+        <span class="step-count">01 / 07</span>
+        <button class="btn-next" onclick="go(1)">开始了解 →</button>
+      </div>
+    </div>
+
+    <!-- S1 咨询是什么 -->
+    <div class="slide" id="s1">
+      <div class="s-label">
+        <div class="s-num">02</div>
+        <span class="s-section">咨询是什么</span>
+      </div>
+      <h2 class="s-title">咨询不是陪聊，也不是教你"想开点"。</h2>
+      <div class="s-body">
+        <p>心理咨询是来访者与咨询师共同协作的过程。</p>
+        <p>在这里，你始终是自己人生的作者。我们会一起探索那些反复出现的情绪、关系与困扰，然后在循证的基础上，尝试一些真实而具体的改变。</p>
+        <p>咨询无法让问题立刻消失，但它或许能帮你：</p>
+      </div>
+      <div class="item-cards">
+        <div class="item-card"><div class="dot"></div><span>在压力或低落袭来时，找到一个支点</span></div>
+        <div class="item-card"><div class="dot"></div><span>对自己多一些理解，少一些苛责</span></div>
+        <div class="item-card"><div class="dot"></div><span>在反复出现的情绪或关系困境里，看见新的可能</span></div>
+        <div class="item-card"><div class="dot"></div><span>慢慢分清什么适合自己，什么只是一直以来不得不那样活</span></div>
+      </div>
+      <div class="nav-row">
+        <button class="btn-back" onclick="go(0)">← 上一步</button>
+        <button class="btn-next" onclick="go(2)">继续 →</button>
+      </div>
+    </div>
+
+    <!-- S2 适合你吗 -->
+    <div class="slide" id="s2">
+      <div class="s2-top">
+        <div class="label">03 · 适合你吗</div>
+        <h2>你可能适合来咨询，如果……</h2>
+      </div>
+      <div class="s2-list">
+        <div class="s2-item"><span class="s2-index">01</span><p>你有一些情绪困扰，但不确定从哪里说起</p></div>
+        <div class="s2-item"><span class="s2-index">02</span><p>你在某段关系或某个处境里绕圈子，走不出来</p></div>
+        <div class="s2-item"><span class="s2-index">03</span><p>你长期感到焦虑、疲惫，或者难以放松</p></div>
+        <div class="s2-item"><span class="s2-index">04</span><p>你对自己的某些反应感到困惑，想理解多一点</p></div>
+        <div class="s2-item"><span class="s2-index">05</span><p>你有改变的念头，但不知道从哪里开始</p></div>
+      </div>
+      <div class="s2-note">你的感受不需要被证明。它一直在告诉你一些事，值得被认真对待。</div>
+      <div class="nav-row">
+        <button class="btn-back" onclick="go(1)">← 上一步</button>
+        <button class="btn-next" onclick="go(3)">继续 →</button>
+      </div>
+    </div>
+
+    <!-- S3 关于我 -->
+    <div class="slide" id="s3">
+      <div class="s3-name-row">
+        <div class="s3-name">麦烨婧</div>
+        <div class="s3-badge">心理咨询师</div>
+      </div>
+      <div class="s3-body">
+        <p>北京大学应用心理（临床方向）硕士，主要使用认知行为疗法（CBT）和情绪障碍跨诊断统一方案（UP）工作。</p>
+        <p>我相信咨询中的改变，很多时候来自一次次真实而具体的尝试——不是来自外界的要求，也不是逼自己变得更好，而是在困境里，依然愿意慢慢往前迈出一点点。</p>
+        <p>咨询中，我会更像一个有"活人感"的同伴。我会认真倾听，也会在安全的基础上，给出一些真实的反馈。同时，我也会提供一些具体的方法与练习，陪你从"道理我都懂"，活成真实的生活。</p>
+      </div>
+      <div class="s3-tags">
+        <span class="s3-tag">情绪困扰</span>
+        <span class="s3-tag">人际关系</span>
+        <span class="s3-tag">学业压力</span>
+        <span class="s3-tag">完美主义</span>
+        <span class="s3-tag">自我探索</span>
+      </div>
+      <div class="s3-note">暂不接待：严重精神障碍、高自杀/自伤/伤人风险、正在经历重大创伤事件的群体。如有需要，我会协助转介。</div>
+      <div class="nav-row">
+        <button class="btn-back" onclick="go(2)">← 上一步</button>
+        <button class="btn-next" onclick="go(4)">继续 →</button>
+      </div>
+    </div>
+
+    <!-- S4 咨询设置 -->
+    <div class="slide" id="s4">
+      <div class="s4-header">
+        <div class="label">05 · 咨询设置</div>
+        <h2>关于费用和形式。</h2>
+      </div>
+      <div class="s4-rows">
+        <div class="s4-row">
+          <span class="s4-key">形式</span>
+          <span class="s4-val">线上（腾讯会议 / 飞书）</span>
+        </div>
+        <div class="s4-row">
+          <span class="s4-key">时长</span>
+          <span class="s4-val">50 分钟 / 次</span>
+        </div>
+        <div class="s4-row">
+          <span class="s4-key">频率</span>
+          <span class="s4-val">每周 1–2 次<small>根据来访情况可讨论</small></span>
+        </div>
+        <div class="s4-row">
+          <span class="s4-key">费用</span>
+          <span class="s4-val">300 元 / 次<small>学生优惠 200 元 · 首次半价</small></span>
+        </div>
+        <div class="s4-row">
+          <span class="s4-key">预沟通</span>
+          <span class="s4-val">正式咨询前<br>15 分钟免费预沟通</span>
+        </div>
+        <div class="s4-row">
+          <span class="s4-key">督导保障</span>
+          <span class="s4-val">"非野生"咨询师，在督导指导下进行咨询</span>
+        </div>
+      </div>
+      <div class="s4-note">咨询不是解决心理困扰的唯一方法。预沟通里，我会和你澄清关于咨询的疑问，辅助你判断咨询是否适合你。</div>
+      <div class="nav-row">
+        <button class="btn-back" onclick="go(3)">← 上一步</button>
+        <button class="btn-next" onclick="go(5)">继续 →</button>
+      </div>
+    </div>
+
+    <!-- S5 来访流程 -->
+    <div class="slide" id="s5">
+      <div class="s5-header">
+        <div class="label">06 · 来访流程</div>
+        <h2>怎么开始？</h2>
+      </div>
+      <div class="s5-steps">
+        <div class="s5-step">
+          <div class="s5-circle">1</div>
+          <div class="s5-content">
+            <strong>填写来访申请表</strong>
+            <p>简单说说你的情况和目前的困扰</p>
+          </div>
+        </div>
+        <div class="s5-step">
+          <div class="s5-circle">2</div>
+          <div class="s5-content">
+            <strong>15 分钟免费预沟通</strong>
+            <p>咨询师会了解一些基本信息，咨访双方感受一下是否匹配</p>
+          </div>
+        </div>
+        <div class="s5-step">
+          <div class="s5-circle">3</div>
+          <div class="s5-content">
+            <strong>签署咨询协议</strong>
+            <p>明确双方的权利和责任</p>
+          </div>
+        </div>
+        <div class="s5-step">
+          <div class="s5-circle">4</div>
+          <div class="s5-content">
+            <strong>预约首次咨询</strong>
+            <p>首次半价，1–2 次初始评估后，一起决定适合的方向</p>
+          </div>
+        </div>
+      </div>
+      <div class="s5-note">如果预沟通后我们觉得不太匹配，我会尽力提供转介资源。</div>
+      <div class="nav-row">
+        <button class="btn-back" onclick="go(4)">← 上一步</button>
+        <button class="btn-next" onclick="go(6)">继续 →</button>
+      </div>
+    </div>
+
+    <!-- S6 结尾 -->
+    <div class="slide" id="s6">
+      <div class="s6-wrap">
+        <div class="s6-big">
+          <h2>期待相遇 🌱</h2>
+          <p>无论我们最后是否一起工作，愿意试着迈出一步，本身就很了不起。</p>
+          <p>还在观望、还不确定的朋友们，也不需要着急。每个人都有自己的节奏与方式。</p>
+          <p style="margin-top:0.8rem;">信箱一直开放，欢迎随时来信。</p>
+        </div>
+        <div class="s6-btn-wrap">
+          <!-- ⬇️ 把 href="https://hcna5mhmgd5r.feishu.cn/share/base/form/shrcnaizilYsHT0EclMlbI8TZII" 替换为你的飞书表单链接 -->
+          <a class="btn-book-final" href="https://hcna5mhmgd5r.feishu.cn/share/base/form/shrcnaizilYsHT0EclMlbI8TZII" target="_blank">填写来访申请表</a>
+        </div>
+        <div class="s6-sub">咨询师会在收到申请表后的 24 小时内回复<br>如有疑问，欢迎发邮件至 inthewoodspsy@163.com</div>
+      </div>
+      <div class="nav-row">
+        <button class="btn-back" onclick="go(5)">← 上一步</button>
+        <span></span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="fixed-cta">
+    <!-- ⬇️ 把 href="https://hcna5mhmgd5r.feishu.cn/share/base/form/shrcnaizilYsHT0EclMlbI8TZII" 替换为你的飞书表单链接 -->
+    <a class="btn-book" href="https://hcna5mhmgd5r.feishu.cn/share/base/form/shrcnaizilYsHT0EclMlbI8TZII" target="_blank">预约咨询</a>
+  </div>
+
+</div>
+<script>
+  let cur = 0;
+  const total = 7;
+  function go(n) {
+    document.getElementById('s' + cur).classList.remove('active');
+    cur = n;
+    document.getElementById('s' + cur).classList.add('active');
+    document.getElementById('progress').style.width = ((cur + 1) / total * 100) + '%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
